@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('penjual_id');
             $table->foreignId('game_id');
-            $table->string('judul', 30);
+            $table->string('judul', 255);
             $table->text('deskripsi');
             $table->string('gambar', 255);
             $table->integer('harga', unsigned: true);
