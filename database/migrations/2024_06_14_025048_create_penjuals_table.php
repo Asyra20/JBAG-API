@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->string('no_telp', 20);
             $table->text('alamat');
-            $table->string('foto', 255)->nullable();
+            $table->string('foto', 255);
             $table->foreignId('ewallet_id');
             $table->string('nama_profil_ewallet', 20);
             $table->string('nomor_ewallet', 20);
