@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
             $table->timestamp('tanggal_waktu');
-            $table->string('invoice', 10);
+            $table->string('invoice', 15);
             $table->foreignId('user_id');
             $table->foreignId('penjual_id');
             $table->string('nama_profil_ewallet', 20);
