@@ -98,6 +98,29 @@ Note: Tier diatas adalah tier pada saat season 29 ya, jika sdh berganti season t
                 'harga' => 250000,
                 'status_akun' => 'tersedia',
             ],
+            [
+                'penjual_id' => 2,
+                'game_id' => 1,
+                'judul' => 'Akun Starter Honor Of Kings Siap Rank | Rank Gold',
+                'deskripsi' => '-',
+                'gambar' => '/images/akun-game/akun-hok-starter.png',
+                'harga' => 25000,
+                'status_akun' => 'tersedia',
+            ],
+            [
+                'penjual_id' => 2,
+                'game_id' => 1,
+                'judul' => 'Polosan Hero Berskin Siap Tempur',
+                'deskripsi' => 'Akun dengan event terbatas (tidak semua akun dapat event ini hanya akun tertentu)
+
+Buruan di order guys stock terbatas
+
+Bebas Pilih skin epic (Dalam 20 pertandingan)
+',
+                'gambar' => '/images/akun-game/akun-hok-polosan.png',
+                'harga' => 30000,
+                'status_akun' => 'tersedia',
+            ],
         ];
 
         foreach ($akunGames as $akunGame) {

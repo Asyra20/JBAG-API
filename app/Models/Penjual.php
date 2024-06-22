@@ -40,7 +40,7 @@ class Penjual extends Model
      */
     public function ewallet(): HasOne
     {
-        return $this->hasOne(Ewallet::class, 'ewallet_id', 'id');
+        return $this->hasOne(Ewallet::class, 'id');
     }
 
     /**

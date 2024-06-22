@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('transaksi_id');
             $table->foreignId('akun_game_id');
-            $table->string('uid_akun', 50);
-            $table->string('email_akun', 50);
-            $table->string('password_akun', 255);
+            $table->string('uid_akun', 50)->nullable();
+            $table->string('email_akun', 50)->nullable();
+            $table->string('password_akun', 255)->nullable();
             $table->timestamps();
         });
     }
