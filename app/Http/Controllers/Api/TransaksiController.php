@@ -112,6 +112,10 @@ class TransaksiController extends Controller
             return new ResponseResource(false, "Transaksi dengan id $id tidak ditemukan", null);
         }
 
+        if ($transaksi->status_pembayaran == 'proses_bayar') {
+            return new ResponseResource(false, "Transaksi ID $id sudah dalam proses bayar", null);
+        }
+
         // // Handle file upload if it exists
         if ($request->hasFile('bukti_pembayaran')) {
             // Store new file
