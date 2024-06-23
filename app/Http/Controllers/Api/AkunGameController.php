@@ -14,6 +14,7 @@ class AkunGameController extends Controller
     {
         $akunGames = AkunGame::with(['game:id,icon', 'penjual:id'])
             ->select('id', 'penjual_id', 'game_id', 'judul', 'harga', 'gambar')
+            ->where('status_akun', 'tersedia')
             ->orderBy('id', 'desc')
             ->get();
         return new ResponseResource(true, 'daftar akun game', $akunGames);
@@ -23,6 +24,7 @@ class AkunGameController extends Controller
     {
         $query = AkunGame::with(['game:id,icon', 'penjual:id'])
             ->select('id', 'penjual_id', 'game_id', 'judul', 'harga', 'gambar')
+            ->where('status_akun', 'tersedia')
             ->orderBy('id', 'desc');
 
         if ($request->has('game_id')) {
@@ -36,6 +38,25 @@ class AkunGameController extends Controller
         $akunGames = $query->get();
 
         return new ResponseResource(true, "daftar akun game dengan pencarian" . $request->judul . "", $akunGames);
+    }
+
+    public function show(string $id)
+    {
+        $transaksi = AkunGame::with(
+            [
+                'penjual:id,user_id' => [
+                    'user:id,nama'
+                ],
+            ]
+        )
+            ->select('id', 'judul', 'deskripsi', 'gambar', 'harga', 'penjual_id')
+            ->find($id);
+
+        if ($transaksi) {
+            return new ResponseResource(true, "Melihat Transaksi dengan id $id", $transaksi);
+        } else {
+            return new ResponseResource(false, "Transaksi dengan id $id tidak ditemukan", null);
+        }
     }
 
     public function store(Request $request)
@@ -103,5 +124,19 @@ class AkunGameController extends Controller
         } else {
             return new ResponseResource(false, "Gagal menghapus item.", null);
         }
+    }
+
+    public function penjual(Request $request)
+    {
+        $idPenjual = $request->query('idpenjual');
+        $status = $request->query('status');
+
+        $akunGames = AkunGame::where('penjual_id', $idPenjual)
+            ->select('id', 'penjual_id', 'game_id', 'judul', 'harga', 'gambar')
+            ->where('status_akun', $status)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return new ResponseResource(true, 'daftar akun game', $akunGames);
     }
 }

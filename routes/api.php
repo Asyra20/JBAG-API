@@ -17,7 +17,9 @@ Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
 
 Route::get('/akungame', [AkunGameController::class, 'index']);
 Route::get('/akungame/search', [AkunGameController::class, 'search']);
+Route::get('/akungame/{id}', [AkunGameController::class, 'show']);
 Route::post('/akungame', [AkunGameController::class, 'store']);
 Route::post('/akungame/update/{id}', [AkunGameController::class, 'update']);
 Route::delete('/akungame/{id}', [AkunGameController::class, 'destroy']);
 
+Route::get('/akungame/penjual/{id}', [AkunGameController::class, 'penjual']);
