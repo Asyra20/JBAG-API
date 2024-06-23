@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->string('gambar', 255);
             $table->integer('harga', unsigned: true);
-            $table->enum('status_akun', ['tersedia', 'terjual'])->default('tersedia');
+            $table->enum('status_akun', ['tersedia', 'pending', 'terjual'])->default('tersedia');
             $table->timestamps();
         });
     }
