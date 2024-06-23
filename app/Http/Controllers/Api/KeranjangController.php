@@ -14,7 +14,15 @@ class KeranjangController extends Controller
     {
         // Mengambil semua item keranjang berdasarkan user ID
         $keranjang = Keranjang::where('user_id', $userId)
-            ->with('akunGame:id,judul,harga')
+            ->with([
+                'akunGame:id,penjual_id,judul,harga' => [
+                    'penjual:id,user_id' => [
+                        'user:id,nama'
+                    ]
+                ]
+            ])
+            ->latest()
+            ->select('id', 'user_id', 'akun_game_id')
             ->get();
 
         return new ResponseResource(true, "List Keranjang user $userId", $keranjang);
