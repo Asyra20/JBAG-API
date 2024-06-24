@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ResponseResource;
 use App\Models\AkunGame;
+use App\Models\DetailTransaksi;
+use App\Models\Keranjang;
 use App\Models\Penjual;
 use App\Models\Transaksi;
 use App\Models\User;
@@ -56,6 +58,11 @@ class TransaksiController extends Controller
 
         foreach ($validated['detail_transaksis'] as $detail) {
             $akunGame = AkunGame::find($detail['akun_game_id']);
+
+            if (DetailTransaksi::find($detail['akun_game_id'])) {
+                return new ResponseResource(false, 'Akun game dengan ID ' . $detail['akun_game_id'] . 'sudah ada di transaksi', null);
+            }
+
             if ($akunGame->status_akun == 'terjual') {
                 return new ResponseResource(false, 'Akun game dengan ID ' . $detail['akun_game_id'] . ' sudah terjual', null);
             }
@@ -77,9 +84,12 @@ class TransaksiController extends Controller
 
         foreach ($validated['detail_transaksis'] as $detail) {
             $transaksi->detailTransaksi()->create($detail);
+
+            // Hapus item keranjang berdasarkan akun_game_id
+            Keranjang::where('akun_game_id', $detail['akun_game_id'])->delete();
         }
 
-        return new ResponseResource(true, "Berhasil membuat Transaksi", $transaksi->load('detailTransaksi'));
+        return new ResponseResource(true, "Berhasil membuat Transaksi", ['transaksi_id' => $transaksi->id]);
     }
 
 
@@ -114,7 +124,7 @@ class TransaksiController extends Controller
     {
         try {
             $validated = $request->validate([
-                'bukti_pembayaran' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+                'bukti_pembayaran' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240',
                 'status_pembayaran' => 'required|in:proses_bayar,sudah_bayar',
             ]);
         } catch (ValidationException $e) {
@@ -155,6 +165,16 @@ class TransaksiController extends Controller
             return new ResponseResource(true, "Berhasil menghapus item.", null);
         } else {
             return new ResponseResource(false, "Gagal menghapus item.", null);
+        }
+    }
+
+    public function lihatBuktiPembayaran(string $id)
+    {
+        $transaksi = Transaksi::where('id', $id)->select('bukti_pembayaran')->get()->first();
+        if ($transaksi->bukti_pembayaran != null) {
+            return new ResponseResource(true, "Mengambil Bukti Transaksi", $transaksi);
+        } else {
+            return new ResponseResource(false, "Bukti Transaksi belum ada.", null);
         }
     }
 }

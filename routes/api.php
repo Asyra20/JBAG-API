@@ -16,6 +16,7 @@ Route::get('/transaksi/user/{id}', [TransaksiController::class, 'index']);
 Route::post('/transaksi', [TransaksiController::class, 'store']);
 Route::get('/transaksi/{id}', [TransaksiController::class, 'show']);
 Route::post('/transaksi/update/{id}', [TransaksiController::class, 'update']);
+Route::get('/transaksi/{id}/bukti-pembayaran', [TransaksiController::class, 'lihatBuktiPembayaran']);
 Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
 
 Route::get('/akungame', [AkunGameController::class, 'index']);
