@@ -14,7 +14,15 @@ class KeranjangController extends Controller
     {
         // Mengambil semua item keranjang berdasarkan user ID
         $keranjang = Keranjang::where('user_id', $userId)
-            ->with('akunGame:id,judul,harga')
+            ->with([
+                'akunGame:id,penjual_id,judul,harga' => [
+                    'penjual:id,user_id' => [
+                        'user:id,nama'
+                    ]
+                ]
+            ])
+            ->latest()
+            ->select('id', 'user_id', 'akun_game_id')
             ->get();
 
         return new ResponseResource(true, "List Keranjang user $userId", $keranjang);
@@ -40,9 +48,8 @@ class KeranjangController extends Controller
         // Cari transaksi berdasarkan akun_game_id
         $transaksi = DetailTransaksi::where('akun_game_id', $request->akun_game_id)->first();
         // Jika ada transaksi dengan akun_game_id tersebut, cek status pembayarannya
-        if ($transaksi && $transaksi->status_pembayaran != 'belum_bayar') {
+        if ($transaksi && $transaksi->status_pembayaran != 'proses_bayar') {
             return new ResponseResource(false, "Akun Game sudah tidak tersedia", null);
-            // return response()->json(['message' => 'Akun Game sudah tidak tersedia'], 403);
         }
 
         // Menambahkan item ke keranjang

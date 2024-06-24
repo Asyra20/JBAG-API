@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('detail_transaksis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaksi_id');
+            $table->foreignId('transaksi_id')->constrained()->onDelete('cascade');
             $table->foreignId('akun_game_id');
             $table->string('uid_akun', 50)->nullable();
             $table->string('email_akun', 50)->nullable();
