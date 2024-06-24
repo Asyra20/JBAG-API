@@ -48,9 +48,8 @@ class KeranjangController extends Controller
         // Cari transaksi berdasarkan akun_game_id
         $transaksi = DetailTransaksi::where('akun_game_id', $request->akun_game_id)->first();
         // Jika ada transaksi dengan akun_game_id tersebut, cek status pembayarannya
-        if ($transaksi && $transaksi->status_pembayaran != 'belum_bayar') {
+        if ($transaksi && $transaksi->status_pembayaran != 'proses_bayar') {
             return new ResponseResource(false, "Akun Game sudah tidak tersedia", null);
-            // return response()->json(['message' => 'Akun Game sudah tidak tersedia'], 403);
         }
 
         // Menambahkan item ke keranjang
