@@ -12,19 +12,19 @@ class EwalletSeeder extends Seeder
         DB::table('ewallets')->insert([
             [
                 'nama' => 'Gopay',
-                'icon' => '/images/logo-gopay.png', // Sesuaikan dengan path icon yang ada
+                'icon' => 'images/logo-gopay.png', 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'nama' => 'Ovo',
-                'icon' => '/images/logo-ovo.png', // Sesuaikan dengan path icon yang ada
+                'icon' => 'images/logo-ovo.png', 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'nama' => 'Dana',
-                'icon' => '/images/logo-dana.png', // Sesuaikan dengan path icon yang ada
+                'icon' => 'images/logo-dana.png', 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

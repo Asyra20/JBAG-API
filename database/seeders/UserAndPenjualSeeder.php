@@ -61,7 +61,7 @@ class UserAndPenjualSeeder extends Seeder
                 'user_id' => $penjualId1,
                 'no_telp' => '085225001100',
                 'alamat' => 'Alamat Penjual 1',
-                'foto' => "/images/foto-penjual/fotopenjual1.jpg",
+                'foto' => "images/foto-penjual/fotopenjual1.jpg",
                 'ewallet_id' => 3, // Sesuaikan dengan ID ewallet yang ada
                 'nama_profil_ewallet' => 'Nopal Gaming',
                 'nomor_ewallet' => '1234567890',
@@ -73,7 +73,7 @@ class UserAndPenjualSeeder extends Seeder
                 'user_id' => $penjualId2,
                 'no_telp' => '085225041144',
                 'alamat' => 'Alamat Penjual 2',
-                'foto' => "/images/foto-penjual/fotopenjual1.jpg",
+                'foto' => "images/foto-penjual/fotopenjual1.jpg",
                 'ewallet_id' => 1, // Sesuaikan dengan ID ewallet yang ada
                 'nama_profil_ewallet' => 'Dzaky Fadli',
                 'nomor_ewallet' => '0987654321',
