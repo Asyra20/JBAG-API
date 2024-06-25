@@ -1,10 +1,16 @@
 <?php
 
 use App\Http\Controllers\Api\AkunGameController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\KeranjangController;
 use App\Http\Controllers\Api\TransaksiController;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/auth/register-user', [AuthController::class, 'registerUser']);
+Route::post('/auth/register-penjual', [AuthController::class, 'registerPenjual']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::get('/keranjang/user/{id}', [KeranjangController::class, 'index']);
 Route::post('/keranjang', [KeranjangController::class, 'store']);
