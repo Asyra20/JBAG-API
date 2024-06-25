@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AkunGameController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\KeranjangController;
+use App\Http\Controllers\Api\PenilaianController;
 use App\Http\Controllers\Api\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,3 +34,6 @@ Route::post('/akungame/update/{id}', [AkunGameController::class, 'update']);
 Route::delete('/akungame/{id}', [AkunGameController::class, 'destroy']);
 
 Route::get('/akungame/penjual/{id}', [AkunGameController::class, 'penjual']);
+
+Route::get('/penilaian/{id}', [PenilaianController::class, 'show']);
+Route::post('/penilaian', [PenilaianController::class, 'store']);
