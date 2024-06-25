@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\ResponseResource;
 use App\Models\AkunGame;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\ResponseResource;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class AkunGameController extends Controller
 {
@@ -75,7 +77,7 @@ class AkunGameController extends Controller
         }
 
         if ($request->hasFile('gambar')) {
-            $filePath = $request->file('gambar')->store('images/akun-game', 'public');
+            $filePath = $request->file('gambar')->store('images/akun-game');
             $validated['gambar'] = $filePath;
         }
 
@@ -86,6 +88,7 @@ class AkunGameController extends Controller
 
     public function update(Request $request, $id)
     {
+
         try {
             $validated = $request->validate([
                 'penjual_id' => 'required|integer|exists:users,id',
@@ -105,8 +108,18 @@ class AkunGameController extends Controller
         }
 
         if ($request->hasFile('gambar')) {
-            $filePath = $request->file('gambar')->store('images/akun-game', 'public');
-            $validated['gambar'] = $filePath;
+            if ($transaksi->gambar) {
+                Storage::disk('public')->delete($transaksi->gambar);
+            }
+
+            try {
+                $filePath = $request->file('gambar')->store('images/akun-game');
+                $validated['gambar'] = $filePath;
+                Log::info('File uploaded successfully: ' . $filePath);
+            } catch (\Exception $e) {
+                Log::error('File upload failed: ' . $e->getMessage());
+                return new ResponseResource(false, "Gagal mengupload gambar.", null);
+            }
         }
 
         $transaksi->update($validated);
@@ -115,28 +128,35 @@ class AkunGameController extends Controller
     }
 
 
+
     public function destroy(string $id)
     {
-        $transaksi = AkunGame::find($id);
-        if ($transaksi) {
-            $transaksi->delete();
-            return new ResponseResource(true, "Berhasil menghapus item.", null);
+        $akunGame = AkunGame::find($id);
+
+        if ($akunGame) {
+            if ($akunGame->status_akun == 'tersedia') {
+                $akunGame->delete();
+                return new ResponseResource(true, "Berhasil menghapus item.", null);
+            } else {
+                return new ResponseResource(false, "Item tidak bisa dihapus karena status bukan 'tersedia'.", null);
+            }
         } else {
-            return new ResponseResource(false, "Gagal menghapus item.", null);
+            return new ResponseResource(false, "Item tidak ditemukan.", null);
         }
     }
 
-    public function penjual(Request $request)
+    public function penjual(Request $request, string $id)
     {
-        $idPenjual = $request->query('idpenjual');
         $status = $request->query('status');
 
-        $akunGames = AkunGame::where('penjual_id', $idPenjual)
-            ->select('id', 'penjual_id', 'game_id', 'judul', 'harga', 'gambar')
+        $akunGames = AkunGame::where('penjual_id', $id)
+            ->select('id', 'penjual_id', 'game_id', 'judul', 'deskripsi', 'harga', 'gambar')
             ->where('status_akun', $status)
             ->orderBy('id', 'desc')
             ->get();
 
         return new ResponseResource(true, 'daftar akun game', $akunGames);
     }
+
+
 }

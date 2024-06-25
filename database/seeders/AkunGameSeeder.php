@@ -20,7 +20,7 @@ class AkunGameSeeder extends Seeder
                 'game_id' => 3,
                 'judul' => 'AKUN SULTAN BERSKIN LEGEND FRANCO + COLLECTOR LING + COLLECTOR BENEDETA + RECALL GG',
                 'deskripsi' => 'DIJAMIN SAT SET SAAT PAKE LING',
-                'gambar' => 'public/images/akun-game/akun-mole-ling-murah.png',
+                'gambar' => 'images/akun-game/akun-mole-ling-murah.png',
                 'harga' => 150000,
                 'status_akun' => 'terjual',
             ],
@@ -82,7 +82,7 @@ Skyboard : 68
 Skin kendaraan : 75
 Total skin senjata : -
 ',
-                'gambar' => '/images/akun-game/akun-epep-1-tahun.png',
+                'gambar' => 'images/akun-game/akun-epep-1-tahun.png',
                 'harga' => 200000,
                 'status_akun' => 'tersedia',
             ],
@@ -94,7 +94,7 @@ Total skin senjata : -
 Emblem Max I (Assasins)
 WR Lance 80% an Event Change Name ON
 Note: Tier diatas adalah tier pada saat season 29 ya, jika sdh berganti season tier akan turun.',
-                'gambar' => 'public/images/akun-game/akun-mole-lance-hero.png',
+                'gambar' => 'images/akun-game/akun-mole-lance-hero.png',
                 'harga' => 250000,
                 'status_akun' => 'tersedia',
             ],
@@ -103,7 +103,7 @@ Note: Tier diatas adalah tier pada saat season 29 ya, jika sdh berganti season t
                 'game_id' => 1,
                 'judul' => 'Akun Starter Honor Of Kings Siap Rank | Rank Gold',
                 'deskripsi' => '-',
-                'gambar' => '/images/akun-game/akun-hok-starter.png',
+                'gambar' => 'images/akun-game/akun-hok-starter.png',
                 'harga' => 25000,
                 'status_akun' => 'tersedia',
             ],
@@ -117,7 +117,7 @@ Buruan di order guys stock terbatas
 
 Bebas Pilih skin epic (Dalam 20 pertandingan)
 ',
-                'gambar' => '/images/akun-game/akun-hok-polosan.png',
+                'gambar' => 'images/akun-game/akun-hok-polosan.png',
                 'harga' => 30000,
                 'status_akun' => 'tersedia',
             ],
