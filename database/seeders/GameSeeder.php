@@ -16,19 +16,19 @@ class GameSeeder extends Seeder
         DB::table('games')->insert([
             [
                 'nama' => 'Honor of Kings',
-                'icon' => '/images/hok.png',
+                'icon' => 'images/hok.png',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'nama' => 'Free Fire',
-                'icon' => '/images/ff.png',
+                'icon' => 'images/ff.png',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'nama' => 'Mobile Legends',
-                'icon' => '/images/mole.png',
+                'icon' => 'images/mole.png',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

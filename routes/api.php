@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AkunGameController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CheckoutController;
+use App\Http\Controllers\Api\GameController;
+use App\Http\Controllers\Api\EwalletController;
 use App\Http\Controllers\Api\KeranjangController;
 use App\Http\Controllers\Api\PenilaianController;
 use App\Http\Controllers\Api\TransaksiController;
@@ -37,3 +39,9 @@ Route::get('/akungame/penjual/{id}', [AkunGameController::class, 'penjual']);
 
 Route::get('/penilaian/{id}', [PenilaianController::class, 'show']);
 Route::post('/penilaian', [PenilaianController::class, 'store']);
+
+Route::get('/games', [GameController::class, 'index']);
+Route::post('/games', [GameController::class, 'store']);
+
+Route::get('/ewallets', [EwalletController::class, 'index']);
+Route::post('/ewallets', [EwalletController::class, 'store']);
