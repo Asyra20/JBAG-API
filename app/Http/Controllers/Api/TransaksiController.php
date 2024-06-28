@@ -18,8 +18,10 @@ class TransaksiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(string $userId)
+    public function index(Request $request, string $userId)
     {
+        $status = $request->query('status');
+
         $user = User::where('role', 'pembeli')
             ->where('id', $userId)
             ->first();
@@ -27,11 +29,24 @@ class TransaksiController extends Controller
             return new ResponseResource(false, "Transaksi user_id $userId tidak ditemukan", null);
         }
 
-        // Mengambil semua item transaksi berdasarkan user ID
-        $transaksi = Transaksi::where('user_id', $userId)
-            ->select('id', 'invoice')
-            ->orderBy('id', 'desc')
-            ->get();
+        if ($status == "belum_bayar" || $status == "sudah_bayar") {
+            $transaksi = Transaksi::where('user_id', $userId)
+                ->Where('status_pembayaran', $status)
+                ->select('id', 'invoice', 'status_pembayaran')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
+        if ($status == "terjual") {
+            $transaksi = Transaksi::where('user_id', $userId)
+                ->where('status_pembayaran', 'sudah_bayar')
+                ->whereHas('detailTransaksi.akunGame', function ($query) {
+                    $query->where('status_akun', 'terjual');
+                })
+                ->select('id', 'invoice', 'status_pembayaran')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
 
         return new ResponseResource(true, "Transaksi user $userId ditemukan", $transaksi);
     }
