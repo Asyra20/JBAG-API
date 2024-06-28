@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('nomor_ewallet', 30);
             $table->integer('harga_total', unsigned:true);
             $table->string('bukti_pembayaran', 255)->nullable();
-            $table->enum('status_pembayaran', ['belum_bayar', 'proses_bayar', 'sudah_bayar'])->default('belum_bayar');
+            $table->enum('status_pembayaran', ['belum_bayar', 'sudah_bayar'])->default('belum_bayar');
             $table->timestamps();
         });
     }

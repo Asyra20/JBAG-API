@@ -20,8 +20,6 @@ class TransaksiController extends Controller
      */
     public function index(string $userId)
     {
-
-        // Cek apakah akun_game_id sudah ada di keranjang user
         $user = User::where('role', 'pembeli')
             ->where('id', $userId)
             ->first();
@@ -31,7 +29,8 @@ class TransaksiController extends Controller
 
         // Mengambil semua item transaksi berdasarkan user ID
         $transaksi = Transaksi::where('user_id', $userId)
-            ->select('id', 'tanggal_waktu', 'invoice', 'harga_total', 'status_pembayaran')
+            ->select('id', 'invoice')
+            ->orderBy('id', 'desc')
             ->get();
 
         return new ResponseResource(true, "Transaksi user $userId ditemukan", $transaksi);
