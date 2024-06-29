@@ -33,7 +33,7 @@ class TransaksiSeeder extends Seeder
                 'nama_profil_ewallet' => 'Dzaky Fadli',
                 'nomor_ewallet' => '0987654321',
                 'harga_total' => 600000,
-                'bukti_pembayaran' => '/images/bukti-pembayaran/buktibayar1.png',
+                'bukti_pembayaran' => 'images/bukti-pembayaran/buktibayar1.png',
                 'status_pembayaran' => 'sudah_bayar',
             ],
         ];
