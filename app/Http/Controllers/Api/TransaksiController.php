@@ -77,6 +77,10 @@ class TransaksiController extends Controller
                 return new ResponseResource(false, 'Akun game dengan ID ' . $detail['akun_game_id'] . 'sudah ada di transaksi', null);
             }
 
+            if ($akunGame->status_akun == 'pending') {
+                return new ResponseResource(false, 'Akun game dengan ID ' . $detail['akun_game_id'] . ' sudah terbayar', null);
+            }
+
             if ($akunGame->status_akun == 'terjual') {
                 return new ResponseResource(false, 'Akun game dengan ID ' . $detail['akun_game_id'] . ' sudah terjual', null);
             }
@@ -139,7 +143,7 @@ class TransaksiController extends Controller
         try {
             $validated = $request->validate([
                 'bukti_pembayaran' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240',
-                'status_pembayaran' => 'required|in:proses_bayar,sudah_bayar',
+                'status_pembayaran' => 'required',
             ]);
         } catch (ValidationException $e) {
             return new ResponseResource(false, "Validator error", $e->errors());
@@ -151,19 +155,26 @@ class TransaksiController extends Controller
             return new ResponseResource(false, "Transaksi dengan id $id tidak ditemukan", null);
         }
 
-        if ($transaksi->status_pembayaran == 'proses_bayar') {
-            return new ResponseResource(false, "Transaksi ID $id sudah dalam proses bayar", null);
+        if ($transaksi->status_pembayaran == 'sudah_bayar') {
+            return new ResponseResource(false, "Transaksi ID $id sudah bayar", null);
         }
 
-        // // Handle file upload if it exists
         if ($request->hasFile('bukti_pembayaran')) {
-            // Store new file
             $filePath = $request->file('bukti_pembayaran')->store('images/bukti-pembayaran');
             $transaksi->bukti_pembayaran = $filePath;
         }
 
         $transaksi->status_pembayaran = $validated['status_pembayaran'];
         $transaksi->save();
+
+        foreach ($transaksi->detailTransaksi as $detail) {
+            $akunGame = $detail->akunGame;
+            if ($akunGame) {
+                $akunGame->status_akun = 'pending';
+                $akunGame->save();
+            }
+        }
+
 
         return new ResponseResource(true, "Transaksi dengan id $id berhasil di update", $transaksi);
     }
