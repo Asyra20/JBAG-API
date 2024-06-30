@@ -28,6 +28,8 @@ Route::post('/transaksi/update/{id}', [TransaksiController::class, 'update']);
 Route::get('/transaksi/{id}/bukti-pembayaran', [TransaksiController::class, 'lihatBuktiPembayaran']);
 Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
 
+Route::patch('/kirim-akun', [TransaksiController::class, 'kirimAkun']);
+
 Route::get('/akungame', [AkunGameController::class, 'index']);
 Route::get('/akungame/search', [AkunGameController::class, 'search']);
 Route::get('/akungame/{id}', [AkunGameController::class, 'show']);
