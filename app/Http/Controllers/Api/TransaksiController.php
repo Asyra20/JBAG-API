@@ -122,12 +122,14 @@ class TransaksiController extends Controller
             [
                 'penjual:id,user_id,ewallet_id' => [
                     'user:id,nama', 'ewallet:id,nama,icon'
-                ], 'detailTransaksi:id,transaksi_id,akun_game_id' => [
+                ],
+                'pembeli:id,email',
+                'detailTransaksi:id,transaksi_id,akun_game_id' => [
                     'akunGame:id,judul,harga'
                 ]
             ]
         )
-            ->select('id', 'penjual_id', 'tanggal_waktu', 'invoice', 'nama_profil_ewallet', 'nomor_ewallet', 'harga_total', 'status_pembayaran')
+            ->select('id', 'penjual_id', 'user_id', 'tanggal_waktu', 'invoice', 'nama_profil_ewallet', 'nomor_ewallet', 'harga_total', 'status_pembayaran')
             ->find($id);
 
         if ($transaksi) {

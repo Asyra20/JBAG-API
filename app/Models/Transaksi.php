@@ -34,6 +34,16 @@ class Transaksi extends Model
     }
 
     /**
+     * Get the user that owns the Transaksi
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function pembeli(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
      * Get the penjual that owns the Transaksi
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
