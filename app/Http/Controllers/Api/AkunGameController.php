@@ -39,7 +39,8 @@ class AkunGameController extends Controller
 
         $akunGames = $query->get();
 
-        return new ResponseResource(true, "daftar akun game dengan pencarian " . $request->input('judul') . " dan game id " .  $request->input('game_id'), $akunGames);    }
+        return new ResponseResource(true, "daftar akun game dengan pencarian " . $request->input('judul') . " dan game id " .  $request->input('game_id'), $akunGames);
+    }
 
     public function show(string $id)
     {

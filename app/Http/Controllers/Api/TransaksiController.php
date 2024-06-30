@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ResponseResource;
+use App\Mail\KirimAkun;
 use App\Models\AkunGame;
 use App\Models\DetailTransaksi;
 use App\Models\Keranjang;
@@ -11,6 +12,7 @@ use App\Models\Penjual;
 use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class TransaksiController extends Controller
@@ -201,5 +203,44 @@ class TransaksiController extends Controller
         } else {
             return new ResponseResource(false, "Bukti Transaksi belum ada.", null);
         }
+    }
+
+    public function kirimAkun(Request $request)
+    {
+        $data = $request->input('data');
+        $email = $request->input('email');
+        $subject = $request->input('subject');
+        $nama_penjual = $request->input('nama_penjual');
+
+        try {
+            $request->validate([
+                'email' => 'required|email:rfc,dns'
+            ]);
+        } catch (ValidationException $e) {
+            return new ResponseResource(false, "Validator error", $e->errors());
+        }
+
+        foreach ($data as $item) {
+            $detailTransaksi = DetailTransaksi::where('id', $item['id'])
+                ->where('akun_game_id', $item['akun_game_id'])
+                ->first();
+
+            if ($detailTransaksi) {
+                $detailTransaksi->uid_akun = $item['uid_akun'];
+                $detailTransaksi->email_akun = $item['email_akun'];
+                $detailTransaksi->password_akun = $item['password_akun'];
+                $detailTransaksi->save();
+            }
+
+            $akunGame = AkunGame::find($item['akun_game_id']);
+            if ($akunGame) {
+                $akunGame->status_akun = 'terjual';
+                $akunGame->save();
+            }
+        }
+
+        Mail::to($email)->send(new KirimAkun($data, $subject, $nama_penjual));
+
+        return new ResponseResource(true, "Berhasil mengirim mail", null);
     }
 }
