@@ -18,10 +18,10 @@ class TransaksiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(string $userId)
+    public function index(Request $request, string $userId)
     {
+        $status = $request->query('status');
 
-        // Cek apakah akun_game_id sudah ada di keranjang user
         $user = User::where('role', 'pembeli')
             ->where('id', $userId)
             ->first();
@@ -29,10 +29,24 @@ class TransaksiController extends Controller
             return new ResponseResource(false, "Transaksi user_id $userId tidak ditemukan", null);
         }
 
-        // Mengambil semua item transaksi berdasarkan user ID
-        $transaksi = Transaksi::where('user_id', $userId)
-            ->select('id', 'tanggal_waktu', 'invoice', 'harga_total', 'status_pembayaran')
-            ->get();
+        if ($status == "belum_bayar" || $status == "sudah_bayar") {
+            $transaksi = Transaksi::where('user_id', $userId)
+                ->Where('status_pembayaran', $status)
+                ->select('id', 'invoice', 'status_pembayaran')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
+        if ($status == "terjual") {
+            $transaksi = Transaksi::where('user_id', $userId)
+                ->where('status_pembayaran', 'sudah_bayar')
+                ->whereHas('detailTransaksi.akunGame', function ($query) {
+                    $query->where('status_akun', 'terjual');
+                })
+                ->select('id', 'invoice', 'status_pembayaran')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
 
         return new ResponseResource(true, "Transaksi user $userId ditemukan", $transaksi);
     }
@@ -61,6 +75,10 @@ class TransaksiController extends Controller
 
             if (DetailTransaksi::find($detail['akun_game_id'])) {
                 return new ResponseResource(false, 'Akun game dengan ID ' . $detail['akun_game_id'] . 'sudah ada di transaksi', null);
+            }
+
+            if ($akunGame->status_akun == 'pending') {
+                return new ResponseResource(false, 'Akun game dengan ID ' . $detail['akun_game_id'] . ' sudah terbayar', null);
             }
 
             if ($akunGame->status_akun == 'terjual') {
@@ -125,7 +143,7 @@ class TransaksiController extends Controller
         try {
             $validated = $request->validate([
                 'bukti_pembayaran' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240',
-                'status_pembayaran' => 'required|in:proses_bayar,sudah_bayar',
+                'status_pembayaran' => 'required',
             ]);
         } catch (ValidationException $e) {
             return new ResponseResource(false, "Validator error", $e->errors());
@@ -137,19 +155,26 @@ class TransaksiController extends Controller
             return new ResponseResource(false, "Transaksi dengan id $id tidak ditemukan", null);
         }
 
-        if ($transaksi->status_pembayaran == 'proses_bayar') {
-            return new ResponseResource(false, "Transaksi ID $id sudah dalam proses bayar", null);
+        if ($transaksi->status_pembayaran == 'sudah_bayar') {
+            return new ResponseResource(false, "Transaksi ID $id sudah bayar", null);
         }
 
-        // // Handle file upload if it exists
         if ($request->hasFile('bukti_pembayaran')) {
-            // Store new file
             $filePath = $request->file('bukti_pembayaran')->store('images/bukti-pembayaran');
             $transaksi->bukti_pembayaran = $filePath;
         }
 
         $transaksi->status_pembayaran = $validated['status_pembayaran'];
         $transaksi->save();
+
+        foreach ($transaksi->detailTransaksi as $detail) {
+            $akunGame = $detail->akunGame;
+            if ($akunGame) {
+                $akunGame->status_akun = 'pending';
+                $akunGame->save();
+            }
+        }
+
 
         return new ResponseResource(true, "Transaksi dengan id $id berhasil di update", $transaksi);
     }

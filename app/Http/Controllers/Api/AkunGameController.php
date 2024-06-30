@@ -24,7 +24,6 @@ class AkunGameController extends Controller
 
     public function search(Request $request)
     {
-
         $query = AkunGame::with(['game:id,icon', 'penjual:id,user_id' => ['user:id,nama']])
             ->select('id', 'penjual_id', 'game_id', 'judul', 'harga', 'gambar')
             ->where('status_akun', 'tersedia')
