@@ -24,7 +24,8 @@ class AkunGameController extends Controller
 
     public function search(Request $request)
     {
-        $query = AkunGame::with(['game:id,icon', 'penjual:id'])
+
+        $query = AkunGame::with(['game:id,icon', 'penjual:id,user_id' => ['user:id,nama']])
             ->select('id', 'penjual_id', 'game_id', 'judul', 'harga', 'gambar')
             ->where('status_akun', 'tersedia')
             ->orderBy('id', 'desc');
@@ -39,8 +40,7 @@ class AkunGameController extends Controller
 
         $akunGames = $query->get();
 
-        return new ResponseResource(true, "daftar akun game dengan pencarian" . $request->judul . "", $akunGames);
-    }
+        return new ResponseResource(true, "daftar akun game dengan pencarian " . $request->input('judul') . " dan game id " .  $request->input('game_id'), $akunGames);    }
 
     public function show(string $id)
     {
@@ -157,6 +157,4 @@ class AkunGameController extends Controller
 
         return new ResponseResource(true, 'daftar akun game', $akunGames);
     }
-
-
 }
