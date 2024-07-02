@@ -8,6 +8,7 @@ use App\Models\AkunGame;
 use App\Models\DetailTransaksi;
 use App\Models\Keranjang;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class KeranjangController extends Controller
 {
@@ -31,11 +32,14 @@ class KeranjangController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi request
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'akun_game_id' => 'required|exists:akun_games,id',
-        ]);
+        try {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'akun_game_id' => 'required|exists:akun_games,id',
+            ]);
+        } catch (ValidationException $e) {
+            return new ResponseResource(false, "Validator error", $e->errors());
+        }
 
         $akunGame = AkunGame::find($request->akun_game_id);
         if ($akunGame && $akunGame->status_akun != "tersedia") {
