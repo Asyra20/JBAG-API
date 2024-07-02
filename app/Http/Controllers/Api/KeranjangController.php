@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ResponseResource;
+use App\Models\AkunGame;
 use App\Models\DetailTransaksi;
 use App\Models\Keranjang;
 use Illuminate\Http\Request;
@@ -36,6 +37,10 @@ class KeranjangController extends Controller
             'akun_game_id' => 'required|exists:akun_games,id',
         ]);
 
+        $akunGame = AkunGame::find($request->akun_game_id);
+        if ($akunGame && $akunGame->status_akun != "tersedia") {
+            return new ResponseResource(false, "Akun Game tidak tersedia", null);
+        }
 
         // Cek apakah akun_game_id sudah ada di keranjang user
         $existingKeranjang = Keranjang::where('user_id', $request->user_id)
@@ -48,8 +53,8 @@ class KeranjangController extends Controller
         // Cari transaksi berdasarkan akun_game_id
         $transaksi = DetailTransaksi::where('akun_game_id', $request->akun_game_id)->first();
         // Jika ada transaksi dengan akun_game_id tersebut, cek status pembayarannya
-        if ($transaksi && $transaksi->status_pembayaran != 'sudah_bayar') {
-            return new ResponseResource(false, "Akun Game sudah terjual", null);
+        if ($transaksi && $transaksi->status_pembayaran == 'sudah_bayar') {
+            return new ResponseResource(false, "Akun Game tidak tersedia", null);
         }
 
         // Menambahkan item ke keranjang
