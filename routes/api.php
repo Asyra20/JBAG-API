@@ -22,6 +22,7 @@ Route::delete('/keranjang/{id}', [KeranjangController::class, 'destroy']);
 Route::get('/checkout', [CheckoutController::class, 'paymentMthodPenjual']);
 
 Route::get('/transaksi/user/{id}', [TransaksiController::class, 'index']);
+Route::get('/transaksi/penjual/{id}', [TransaksiController::class, 'penjual']);
 Route::post('/transaksi', [TransaksiController::class, 'store']);
 Route::get('/transaksi/{id}', [TransaksiController::class, 'show']);
 Route::post('/transaksi/update/{id}', [TransaksiController::class, 'update']);

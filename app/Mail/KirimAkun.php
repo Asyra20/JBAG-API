@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Number;
 
 class KirimAkun extends Mailable
 {
@@ -16,15 +17,17 @@ class KirimAkun extends Mailable
     public $data;
     public $subject;
     public $nama_penjual;
+    public $deskripsi;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($data, $subject, $nama_penjual)
+    public function __construct($data, $subject, $nama_penjual, $deskripsi)
     {
         $this->data = $data;
         $this->subject = $subject;
         $this->nama_penjual = $nama_penjual;
+        $this->deskripsi = $deskripsi;
     }
 
     /**
@@ -47,6 +50,7 @@ class KirimAkun extends Mailable
             with: [
                 'data' => $this->data,
                 'nama_penjual' => $this->nama_penjual,
+                'deskripsi' => $this->deskripsi,
             ],
         );
     }

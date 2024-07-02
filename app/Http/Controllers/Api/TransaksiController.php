@@ -54,6 +54,43 @@ class TransaksiController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     */
+    public function penjual(Request $request, string $penjualId)
+    {
+        $status = $request->query('status');
+
+        $penjual = Penjual::where('id', $penjualId)->first();
+        if (!$penjual) {
+            return new ResponseResource(false, "Penjual dengan id $penjualId tidak ditemukan", null);
+        }
+
+        if ($status == "pending") {
+            $transaksi = Transaksi::where('penjual_id', $penjualId)
+                ->Where('status_pembayaran', 'sudah_bayar')
+                ->whereHas('detailTransaksi.akunGame', function ($query) {
+                    $query->where('status_akun', 'pending');
+                })
+                ->select('id', 'invoice', 'status_pembayaran')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
+        if ($status == "terjual") {
+            $transaksi = Transaksi::where('user_id', $penjualId)
+                ->where('status_pembayaran', 'sudah_bayar')
+                ->whereHas('detailTransaksi.akunGame', function ($query) {
+                    $query->where('status_akun', 'terjual');
+                })
+                ->select('id', 'invoice', 'status_pembayaran')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
+        return new ResponseResource(true, "Transaksi penjual id $penjualId ditemukan", $transaksi);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -209,40 +246,49 @@ class TransaksiController extends Controller
 
     public function kirimAkun(Request $request)
     {
-        $data = $request->input('data');
-        $email = $request->input('email');
-        $subject = $request->input('subject');
-        $nama_penjual = $request->input('nama_penjual');
+        $emailPembeli = $request->input('email_pembeli');
+        $subject = $request->input('subjek');
+        $namaPenjual = $request->input('nama_penjual');
+        $data = $request->input('akun');
+        $deskripsi = $request->input('deskripsi');
 
         try {
             $request->validate([
-                'email' => 'required|email:rfc,dns'
+                'email_pembeli' => 'required|email:rfc,dns'
             ]);
+
+            foreach ($data as $item) {
+                $detailTransaksi = DetailTransaksi::where('id', $item['id'])
+                    ->where('akun_game_id', $item['akun_game_id'])
+                    ->first();
+
+                if ($detailTransaksi) {
+                    $detailTransaksi->uid_akun = $item['uid_akun'];
+                    $detailTransaksi->email_akun = $item['email_akun'];
+                    $detailTransaksi->password_akun = $item['password_akun'];
+                    $detailTransaksi->save();
+                } else {
+                    throw new \Exception('DetailTransaksi tidak ditemukan untuk id: ' . $item['id']);
+                }
+
+                $akunGame = AkunGame::find($item['akun_game_id']);
+                if ($akunGame) {
+                    $akunGame->status_akun = 'terjual';
+                    $akunGame->save();
+                } else {
+                    throw new \Exception('AkunGame tidak ditemukan untuk id: ' . $item['akun_game_id']);
+                }
+            }
+
+            Mail::to($emailPembeli)->send(new KirimAkun($data, $subject, $namaPenjual, $deskripsi));
+
+            return new ResponseResource(true, "Berhasil mengirim mail", null);
         } catch (ValidationException $e) {
             return new ResponseResource(false, "Validator error", $e->errors());
+        } catch (\Exception $e) {
+            return new ResponseResource(false, "Terjadi kesalahan", $e->getMessage());
+        } catch (\Throwable $e) {
+            return new ResponseResource(false, "Unexpected error", $e->getMessage());
         }
-
-        foreach ($data as $item) {
-            $detailTransaksi = DetailTransaksi::where('id', $item['id'])
-                ->where('akun_game_id', $item['akun_game_id'])
-                ->first();
-
-            if ($detailTransaksi) {
-                $detailTransaksi->uid_akun = $item['uid_akun'];
-                $detailTransaksi->email_akun = $item['email_akun'];
-                $detailTransaksi->password_akun = $item['password_akun'];
-                $detailTransaksi->save();
-            }
-
-            $akunGame = AkunGame::find($item['akun_game_id']);
-            if ($akunGame) {
-                $akunGame->status_akun = 'terjual';
-                $akunGame->save();
-            }
-        }
-
-        Mail::to($email)->send(new KirimAkun($data, $subject, $nama_penjual));
-
-        return new ResponseResource(true, "Berhasil mengirim mail", null);
     }
 }
