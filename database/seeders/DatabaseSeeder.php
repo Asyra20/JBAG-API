@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
             GameSeeder::class,
             AkunGameSeeder::class,
             // KeranjangSeeder::class,
-            TransaksiSeeder::class,
-            DetailTransaksiSeeder::class,
+            // TransaksiSeeder::class,
+            // DetailTransaksiSeeder::class,
             // PenilaianSeeder::class,
         ]);
     }

@@ -25,10 +25,54 @@ class UserAndPenjualSeeder extends Seeder
         // Insert pembeli user
         DB::table('users')->insert([
             'role' => 'pembeli',
-            'nama' => 'Pembeli',
-            'username' => 'pembeliya',
+            'nama' => 'dzaky',
+            'username' => 'dzaky',
             'email' => 'zaaaafl654@gmail.com',
-            'password' => Hash::make('inisayapembeli'),
+            'password' => Hash::make('dz'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Insert pembeli user
+        DB::table('users')->insert([
+            'role' => 'pembeli',
+            'nama' => 'asira',
+            'username' => 'asira',
+            'email' => 'rasyraf7@gmail.com',
+            'password' => Hash::make('asira'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Insert pembeli user
+        DB::table('users')->insert([
+            'role' => 'pembeli',
+            'nama' => 'khonif',
+            'username' => 'khonif',
+            'email' => 'oniefzk11@gmail.com',
+            'password' => Hash::make('khonif'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Insert pembeli user
+        DB::table('users')->insert([
+            'role' => 'pembeli',
+            'nama' => 'nopal',
+            'username' => 'nopal',
+            'email' => 'nauvalrizkyr13@gmail.com',
+            'password' => Hash::make('nopal'),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Insert pembeli user
+        DB::table('users')->insert([
+            'role' => 'pembeli',
+            'nama' => 'puj',
+            'username' => 'pujangga',
+            'email' => 'pujanggaangga96@gmail.com',
+            'password' => Hash::make('pujangga'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -40,7 +84,7 @@ class UserAndPenjualSeeder extends Seeder
             'nama' => 'NopGaming Store',
             'username' => 'nopstore',
             'email' => 'nopstore@jbag.com',
-            'password' => Hash::make('penjualpassword1'),
+            'password' => Hash::make('nopstore'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -50,7 +94,7 @@ class UserAndPenjualSeeder extends Seeder
             'nama' => 'Dzzzzz Store',
             'username' => 'dzzzstore',
             'email' => 'dzzstore@jbag.com',
-            'password' => Hash::make('penjualpassword2'),
+            'password' => Hash::make('dzstore'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
