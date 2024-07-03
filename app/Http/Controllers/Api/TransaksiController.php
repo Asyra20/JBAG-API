@@ -31,9 +31,23 @@ class TransaksiController extends Controller
             return new ResponseResource(false, "Transaksi user_id $userId tidak ditemukan", null);
         }
 
-        if ($status == "belum_bayar" || $status == "sudah_bayar") {
+        if ($status == "belum_bayar") {
             $transaksi = Transaksi::where('user_id', $userId)
                 ->Where('status_pembayaran', $status)
+                ->whereHas('detailTransaksi.akunGame', function ($query) {
+                    $query->where('status_akun', 'tersedia');
+                })
+                ->select('id', 'invoice', 'status_pembayaran')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+
+        if ($status == "sudah_bayar") {
+            $transaksi = Transaksi::where('user_id', $userId)
+                ->Where('status_pembayaran', $status)
+                ->whereHas('detailTransaksi.akunGame', function ($query) {
+                    $query->where('status_akun', 'pending');
+                })
                 ->select('id', 'invoice', 'status_pembayaran')
                 ->orderBy('id', 'desc')
                 ->get();
@@ -77,7 +91,7 @@ class TransaksiController extends Controller
         }
 
         if ($status == "terjual") {
-            $transaksi = Transaksi::where('user_id', $penjualId)
+            $transaksi = Transaksi::where('penjual_id', $penjualId)
                 ->where('status_pembayaran', 'sudah_bayar')
                 ->whereHas('detailTransaksi.akunGame', function ($query) {
                     $query->where('status_akun', 'terjual');
