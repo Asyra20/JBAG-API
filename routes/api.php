@@ -10,8 +10,8 @@ use App\Http\Controllers\Api\PenilaianController;
 use App\Http\Controllers\Api\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/auth/register-user', [AuthController::class, 'registerUser']);
-Route::post('/auth/register-penjual', [AuthController::class, 'registerPenjual']);
+Route::post('/register-user', [AuthController::class, 'registerUser']);
+Route::post('/register-penjual', [AuthController::class, 'registerPenjual']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 

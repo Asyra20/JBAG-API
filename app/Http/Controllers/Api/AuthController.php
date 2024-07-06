@@ -10,35 +10,79 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+
 
 class AuthController extends Controller
 {
     public function registerUser(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:8'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
+        try {
+            // nama username email password notelp
+            $request->validate([
+                'nama' => 'required|string|max:255',
+                'username' => 'required|string|max:255',
+                'email' => 'required|string|max:255|unique:users',
+                'password' => 'required|string|min:8'
+            ]);
+        } catch (ValidationException $e) {
+            return new ResponseResource(false, "Validator error", $e->errors());
         }
 
         $user = User::create([
-            'name' => $request->name,
+            'nama' => $request->nama,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
 
-        return response()->json([
-            'data' => $user,
-        ]);
+        return new ResponseResource(true, "Berhasil Registrasi Pembeli", $user);
     }
 
     public function registerPenjual(Request $request)
     {
-        return new ResponseResource(false, "Gagal Registrasi", null);
+        try {
+            $validated = $request->validate([
+                'nama' => 'required|string|max:50',
+                'username' => 'required|string|max:20',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'no_telp' => 'required|string|max:20',
+                'alamat' => 'required|string',
+                'foto' => 'required|file|mimes:jpeg,png,jpg,pdf|max:10240',
+                'ewallet_id' => 'required|exists:ewallets,id',
+                'nama_profil_ewallet' => 'required|string|max:20',
+                'nomor_ewallet' => 'required|string|max:20',
+            ]);
+        } catch (ValidationException $e) {
+            return new ResponseResource(false, "Validator error", $e->errors());
+        }
+
+        $user = User::create([
+            'role' => 'penjual',
+            'nama' => $validated['nama'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $filePath = $request->file('foto')->store('images/foto-penjual');
+            $validated['foto'] = $filePath;
+        }
+
+        $penjual = Penjual::create([
+            'user_id' => $user->id,
+            'no_telp' => $validated['no_telp'],
+            'alamat' => $validated['alamat'],
+            'foto' => $validated['foto'],
+            'ewallet_id' => $validated['ewallet_id'],
+            'nama_profil_ewallet' => $validated['nama_profil_ewallet'],
+            'nomor_ewallet' => $validated['nomor_ewallet'],
+            'is_verified' => 'true', // admin check
+        ]);
+
+        return new ResponseResource(true, "Berhasil Registrasi Penjual", $penjual);
     }
 
 
