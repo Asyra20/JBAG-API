@@ -180,7 +180,7 @@ class TransaksiController extends Controller
                 ]
             ]
         )
-            ->select('id', 'penjual_id', 'user_id', 'tanggal_waktu', 'invoice', 'nama_profil_ewallet', 'nomor_ewallet', 'harga_total', 'status_pembayaran')
+            ->select('id', 'penjual_id', 'user_id', 'tanggal_waktu', 'invoice', 'nama_profil_ewallet', 'nomor_ewallet', 'harga_total', 'status_pembayaran', 'bukti_pembayaran')
             ->find($id);
 
         if ($transaksi) {
@@ -304,5 +304,27 @@ class TransaksiController extends Controller
         } catch (\Throwable $e) {
             return new ResponseResource(false, "Unexpected error", $e->getMessage());
         }
+    }
+    public function resetPembayaran(Request $request)
+    {
+        $transaksiId = $request->input('transaksi_id');
+        $transaksi = Transaksi::find($transaksiId);
+        if ($transaksi) {
+            $transaksi->bukti_pembayaran = null;
+            $transaksi->status_pembayaran = 'belum_bayar';
+            $transaksi->save();
+        } else {
+            throw new \Exception('AkunGame tidak dtrsn$transaksiIdukan untuk id: ' . $transaksiId);
+        }
+
+        foreach ($transaksi->detailTransaksi as $detail) {
+            $akunGame = $detail->akunGame;
+            if ($akunGame) {
+                $akunGame->status_akun = 'tersedia';
+                $akunGame->save();
+            }
+        }
+
+        return new ResponseResource(true, "Berhasil Reset Pembayaran", null);
     }
 }

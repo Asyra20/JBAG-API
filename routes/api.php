@@ -30,6 +30,7 @@ Route::get('/transaksi/{id}/bukti-pembayaran', [TransaksiController::class, 'lih
 Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
 
 Route::patch('/kirim-akun', [TransaksiController::class, 'kirimAkun']);
+Route::post('/reset-pembayaran', [TransaksiController::class, 'resetPembayaran']);
 
 Route::get('/akungame', [AkunGameController::class, 'index']);
 Route::get('/akungame/search', [AkunGameController::class, 'search']);
