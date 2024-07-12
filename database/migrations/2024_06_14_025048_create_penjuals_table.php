@@ -20,7 +20,6 @@ return new class extends Migration
             $table->foreignId('ewallet_id');
             $table->string('nama_profil_ewallet', 20);
             $table->string('nomor_ewallet', 20);
-            $table->enum('is_verified', ['true', 'false'])->default('false');
             $table->timestamps();
         });
     }

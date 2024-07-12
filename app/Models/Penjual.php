@@ -20,7 +20,7 @@ class Penjual extends Model
         'ewallet_id',
         'nama_profil_ewallet',
         'nomor_ewallet',
-        'is_verified',
+
     ];
 
     /**
