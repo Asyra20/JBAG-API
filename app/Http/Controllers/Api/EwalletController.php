@@ -32,6 +32,7 @@ class EwalletController extends Controller
         // Handle file upload
         if ($request->hasFile('icon')) {
             $iconPath = $request->file('icon')->store('images');
+            $validated['icon'] = $iconPath;
         }
 
         // Simpan data ke tabel games

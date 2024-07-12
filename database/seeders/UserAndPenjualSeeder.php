@@ -109,7 +109,6 @@ class UserAndPenjualSeeder extends Seeder
                 'ewallet_id' => 3, // Sesuaikan dengan ID ewallet yang ada
                 'nama_profil_ewallet' => 'Nopal Gaming',
                 'nomor_ewallet' => '1234567890',
-                'is_verified' => 'true',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -121,7 +120,6 @@ class UserAndPenjualSeeder extends Seeder
                 'ewallet_id' => 1, // Sesuaikan dengan ID ewallet yang ada
                 'nama_profil_ewallet' => 'Dzaky Fadli',
                 'nomor_ewallet' => '0987654321',
-                'is_verified' => 'true',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

@@ -79,7 +79,7 @@ class AuthController extends Controller
             'ewallet_id' => $validated['ewallet_id'],
             'nama_profil_ewallet' => $validated['nama_profil_ewallet'],
             'nomor_ewallet' => $validated['nomor_ewallet'],
-            'is_verified' => 'true', // admin check
+
         ]);
 
         return new ResponseResource(true, "Berhasil Registrasi Penjual", $penjual);
